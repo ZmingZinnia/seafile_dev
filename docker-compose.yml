@@ -1,0 +1,41 @@
+version: '3'
+services:
+  db:
+    image: mysql:5.7
+    container_name: seafile-mysql
+    volumes:
+      - /opt/mysql-data:/var/lib/mysql
+      - /opt/seafile_dev/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=True
+
+  memcached:
+    image: memcached:1.4-alpine
+    container_name: seafile-memcached
+    ports:
+      - "11211:11211"
+
+  pro:
+    image: dev/seafile-dev-pro:6.2
+
+    environment:
+      - DOCKER_DEV=1
+      - LOCAL_USER_ID=1000
+      - IS_PRO_VERSION=1
+      - LICENSE_DIR=/code/seaf-license # comment this value if image is pro:6.0
+      - CCNET_CONF_DIR=/code/seafile-pro-server/tests/conf
+      - SEAFILE_CONF_DIR=/code/seafile-pro-server/tests/conf/seafile-data
+      - PYTHONPATH=/code:/code/seafevents:/usr/local/lib/python2.7/dist-packages:/code/seahub/thirdpart:/code/seahub/thirdpart/social-app-django
+
+    container_name: seafile-dev-pro
+    volumes:
+      - /root/data:/data
+    ports:
+     - "8000:8000"
+     - "8082:8082"
+     - "3000:3000"
+    depends_on:
+      - db
+      - memcached
