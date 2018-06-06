@@ -2,19 +2,21 @@
 
 set -e
 
-function local_make() {
+source_prefix=/root/seafile/migrate/source
+
+function local_migrate() {
     dirs=(
         include
         lib
         share
     )
     for d in ${dirs[*]}; do
-        if [[ -e /root/seafile/make/$d ]]; then
-            cp -rf /root/seafile/make/$d/* /usr/local/$d/
+        if [[ -e ${source_prefix}/$d ]]; then
+            cp -rf ${source_prefix}/$d/* /usr/local/$d/
         fi
     done
-    if [[ -e /root/seafile/make/bin ]]; then
-        cp -rf /root/seafile/make/bin/* /usr/bin/
+    if [[ -e ${source_prefix}/bin ]]; then
+        cp -rf ${source_prefix}/bin/* /usr/bin/
     fi
 }
 
@@ -31,7 +33,7 @@ function prepare() {
     rm -rf /root/seafile && ln -sf /data /root/seafile
 
     dirs=(
-        make
+        migrate/source
         logs
     )
     for d in ${dirs[*]}; do
@@ -39,8 +41,8 @@ function prepare() {
             mkdir -p /data/$d
         fi
     done
-
 }
+
 
 function init() {
 
@@ -48,41 +50,43 @@ function init() {
 
     cd /root/seafile/dev
     
-    wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz && tar xf libmemcached-1.0.18.tar.gz && cd libmemcached-1.0.18/ && ./configure --prefix=/root/seafile/make && make && make install && ldconfig && cd ..
+    wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz && tar xf libmemcached-1.0.18.tar.gz && cd libmemcached-1.0.18/ && ./configure --prefix=$source_prefix && make && make install && ldconfig && cd ..
 
-    local_make
+    local_migrate
     
     git clone https://github.com/haiwen/seafobj.git
     
-    git clone https://github.com/haiwen/libevhtp.git && cd libevhtp/ && cmake -DCMAKE_INSTALL_PREFIX:PATH=/root/seafile/make -DEVHTP_DISABLE_SSL=OFF -DEVHTP_BUILD_SHARED=ON . && make && make install && ldconfig && cd ..
+    git clone https://github.com/haiwen/libevhtp.git && cd libevhtp/ && cmake -DCMAKE_INSTALL_PREFIX:PATH=$source_prefix -DEVHTP_DISABLE_SSL=OFF -DEVHTP_BUILD_SHARED=ON . && make && make install && ldconfig && cd ..
 
-    local_make
+    local_migrate
 
-    git clone https://github.com/haiwen/libsearpc.git && cd libsearpc && ./autogen.sh && ./configure --prefix=/root/seafile/make && make && make install && ldconfig && cd ..
+    git clone https://github.com/haiwen/libsearpc.git && cd libsearpc && ./autogen.sh && ./configure --prefix=$source_prefix && make && make install && ldconfig && cd ..
 
-    local_make
+    local_migrate
 
     ssh-keygen -F github.com || ssh-keyscan github.com >>~/.ssh/known_hosts
 
     git clone https://github.com/seafileltd/portable-python-libevent.git
     
-    git clone git@github.com:seafileltd/ccnet-pro-server.git && cd ccnet-pro-server && git fetch origin 6.3-pro:6.3-pro && git checkout 6.3-pro && ./autogen.sh && ./configure --prefix=/root/seafile/make && make && make install && ldconfig && cd ..
+    git clone git@github.com:seafileltd/ccnet-pro-server.git && cd ccnet-pro-server && git fetch origin 6.3-pro:6.3-pro && git checkout 6.3-pro && ./autogen.sh && ./configure --prefix=$source_prefix && make && make install && ldconfig && cd ..
 
-    local_make
+    local_migrate
 
     ccnet-init -c /root/seafile/conf -n zming -H 127.0.0.1
     
-    git clone git@github.com:seafileltd/seafile-pro-server.git && cd seafile-pro-server && git fetch origin 6.3-pro:6.3-pro && git checkout 6.3-pro && ./autogen.sh && ./configure --disable-fuse --prefix=/root/seafile/make && make && make install && ldconfig && cd ..
+    git clone git@github.com:seafileltd/seafile-pro-server.git && cd seafile-pro-server && git fetch origin 6.3-pro:6.3-pro && git checkout 6.3-pro && ./autogen.sh && ./configure --disable-fuse --prefix=$source_prefix && make && make install && ldconfig && cd ..
 
-    local_make
+    local_migrate
 
     cd /root/seafile/conf && seaf-server-init -d seafile-data/ && echo "/root/seafile/conf/seafile-data" > seafile.ini && cd ..
 
     cd conf && sed "/13419/a[Database]\nENGINE = mysql\nHOST = db\nPORT = 3306\nUSER = root\nPASSWD = \nDB = ccnet\nCONNECTION_CHARSET = utf8" ccnet.conf && sed "/8082/a[database]\ntype = mysql\nhost = db\nport = 3306\nuser = root\npassword = /\ndb_name = seafile\nconnection_charset = utf8" seafile-data/seafile.conf
 
-    cd /root/seafile/dev && git clone https://github.com/haiwen/seahub.git && cd seahub && git fetch origin 6.2:6.2 && git checkout 6.2 && pip install -r requirements.txt && pip install -r test-requirements.txt 
+    cd /root/seafile/dev && git clone https://github.com/haiwen/seahub.git && cd seahub && git fetch origin 6.2:6.2 && git checkout 6.2
 
     cd /root/seafile/dev &&  cp /root/scripts/setenv.sh /root/seafile/dev/setenv.sh && cp /root/scripts/run-seahub.sh /root/seafile/dev/run-seahub.sh && . setenv.sh && cd seahub && python manage.py migrate
+
+    cd /root/seafile/dev &&  cp /root/scripts/setenv.sh /root/seafile/dev/setenv.sh && cp /root/scripts/run-seahub.sh /root/seafile/dev/run-seahub.sh 
 
     cd /root/seafile/dev/seahub/seahub && cp settings.py /root/seafile/conf/seahub_settings.py && cd /root/seafile/conf && cat > local_settings.py <<EOF
 DEBUG = True
@@ -141,4 +145,4 @@ fi
 
 link_seahub_setting
 
-local_make
+local_migrate
