@@ -13,7 +13,7 @@ function stop_server() {
 function set_env() {
     export CCNET_CONF_DIR=/root/seafile/conf
     export SEAFILE_CONF_DIR=/root/seafile/conf/seafile-data
-    export PYTHONPATH=/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages:/root/seafile/dev/seahub/thirdpart:/root/seafile/dev/pyes/pyes:/root/seafile/dev/seahub-extra::/root/seafile/dev/portable-python-libevent/libevent:/root/seafile/dev/seafobj:/root/seafile/dev/:/root/seafile/dev/seahub/seahub/:$PYTHONPATH
+    export PYTHONPATH=/usr/lib/python2.7/dist-packages:/usr/lib/python2.7/site-packages:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages:/root/seafile/dev/seahub/thirdpart:/root/seafile/dev/pyes/pyes:/root/seafile/dev/seahub-extra::/root/seafile/dev/portable-python-libevent/libevent:/root/seafile/dev/seafobj:/root/seafile/dev/:/root/seafile/dev/seahub/seahub/:$PYTHONPATH
     export SEAFES_DIR=/root/seafile/dev/seafes/
 }
 
@@ -94,15 +94,13 @@ function migrate_source() {
         include
         lib
         share
+        bin
     )
     for d in ${dirs[*]}; do
         if [[ -e ${source_prefix}/$d ]]; then
-            cp -rf ${source_prefix}/$d/* /usr/local/$d/
+            cp -rf ${source_prefix}/$d/* /usr/$d/
         fi
     done
-    if [[ -e ${source_prefix}/bin ]]; then
-        cp -rf ${source_prefix}/bin/* /usr/bin/
-    fi
 }
 
 case $1 in

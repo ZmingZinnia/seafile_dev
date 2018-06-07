@@ -3,21 +3,20 @@
 set -e
 
 source_prefix=/root/seafile/migrate/source
+office_dep_path=/root/seafile/dev/office_dep
 
 function local_migrate() {
     dirs=(
         include
         lib
+        bin
         share
     )
     for d in ${dirs[*]}; do
         if [[ -e ${source_prefix}/$d ]]; then
-            cp -rf ${source_prefix}/$d/* /usr/local/$d/
+            cp -rf ${source_prefix}/$d/* /usr/$d/
         fi
     done
-    if [[ -e ${source_prefix}/bin ]]; then
-        cp -rf ${source_prefix}/bin/* /usr/bin/
-    fi
 }
 
 function link_seahub_setting() {
@@ -119,9 +118,42 @@ seafesdir=/root/seafile/dev/seafes/
 
 [STATISTICS]
 enabled = true
+
+[OFFICE CONVERTER]
+enabled = true
 EOF
 
     cd /root/seafile/dev && git clone git@github.com:seafileltd/seafes.git
+
+    # build-in office
+    mkdir -p  $office_dep_path
+    cd $office_dep_path && git clone https://github.com/fontforge/libspiro.git && cd libspiro && autoreconf -i && automake --foreign -Wall && ./configure --prefix=$source_prefix && make && make check && make install
+
+    local_migrate
+
+    cd $office_dep_path && git clone https://github.com/LuaDist/libjpeg.git && cd libjpeg && ./configure --prefix=$source_prefix && make && make install
+
+    local_migrate
+
+    cd $office_dep_path && git clone https://github.com/glennrp/libpng.git && cd libpng && git reset --soft af08094ba669eb22401fe1bd771d12a866a6b24e && git reset --hard && ./autogen.sh && ./configure --prefix=$source_prefix && make && make install
+
+    local_migrate
+
+    cd $office_dep_path && wget https://ftp.osuosl.org/pub/blfs/conglomeration/poppler/poppler-data-0.4.7.tar.gz && tar -zxvf poppler-data-0.4.7.tar.gz && cd poppler-data-0.4.7 && make install datadir=/usr DESTDIR=/tmp/buildroot-xyz2000
+
+    local_migrate
+
+    cd $office_dep_path && wget https://poppler.freedesktop.org/poppler-0.44.0.tar.xz && tar -xvf poppler-0.44.0.tar.xz && cd poppler-0.44.0/ && ./configure --enable-xpdf-headers --prefix=$source_prefix && make && make install
+
+    local_migrate
+
+    cd $office_dep_path && git clone --depth 1 https://github.com/coolwanglu/fontforge.git && cd fontforge && git fetch origin pdf2htmlEX:pdf2htmlEX && git checkout pdf2htmlEX && ./autogen.sh && ./configure --prefix=$source_prefix && make && make install
+
+    local_migrate
+
+    cd $office_dep_path && git clone --depth 1 https://github.com/coolwanglu/pdf2htmlEX.git && cd pdf2htmlEX/ && cmake -DCMAKE_INSTALL_PREFIX:PATH=$source_prefix . && make && make install
+
+    local_migrate
 }
 
 
