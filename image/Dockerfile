@@ -17,4 +17,4 @@ RUN apt install -y ssh libevent-dev libcurl4-openssl-dev libglib2.0-dev uuid-dev
 
 RUN . /root/scripts/pip_install.sh
 
-CMD ["/sbin/my_init", "--", "/data/dev/run-seahub.sh"]
+CMD ["/sbin/my_init", "--", "/data/dev/run.sh"]

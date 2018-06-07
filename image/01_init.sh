@@ -80,13 +80,9 @@ function init() {
 
     cd /root/seafile/conf && seaf-server-init -d seafile-data/ && echo "/root/seafile/conf/seafile-data" > seafile.ini && cd ..
 
-    cd conf && sed "/13419/a[Database]\nENGINE = mysql\nHOST = db\nPORT = 3306\nUSER = root\nPASSWD = \nDB = ccnet\nCONNECTION_CHARSET = utf8" ccnet.conf && sed "/8082/a[database]\ntype = mysql\nhost = db\nport = 3306\nuser = root\npassword = /\ndb_name = seafile\nconnection_charset = utf8" seafile-data/seafile.conf
+    cd conf && echo -en "\n[Database]\nENGINE = mysql\nHOST = db\nPORT = 3306\nUSER = root\nPASSWD = db_dev\nDB = ccnet\nCONNECTION_CHARSET = utf8" >> ccnet.conf && echo -en "\n[database]\ntype = mysql\nhost = db\nport = 3306\nuser = root\npassword = db_dev\ndb_name = seafile\nconnection_charset = utf8" >> seafile-data/seafile.conf
 
     cd /root/seafile/dev && git clone https://github.com/haiwen/seahub.git && cd seahub && git fetch origin 6.2:6.2 && git checkout 6.2
-
-    cd /root/seafile/dev &&  cp /root/scripts/setenv.sh /root/seafile/dev/setenv.sh && cp /root/scripts/run-seahub.sh /root/seafile/dev/run-seahub.sh && . setenv.sh && cd seahub && python manage.py migrate
-
-    cd /root/seafile/dev &&  cp /root/scripts/setenv.sh /root/seafile/dev/setenv.sh && cp /root/scripts/run-seahub.sh /root/seafile/dev/run-seahub.sh 
 
     cd /root/seafile/dev/seahub/seahub && cp settings.py /root/seafile/conf/seahub_settings.py && cd /root/seafile/conf && cat > local_settings.py <<EOF
 DEBUG = True
@@ -97,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'seahub', # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'PASSWORD': 'db_dev',                  # Not used with sqlite3.
         'HOST': 'db',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -106,13 +102,13 @@ EOF
 
     cd /root/seafile/dev &&  git clone git@github.com:seafileltd/seahub-extra.git && cd seahub-extra && git fetch origin 6.2:6.2 && git checkout 6.2
 
-    cd /root/seafile/dev && git clone git@github.com:seafileltd/seafevents.git && git fetch origin 6.2:6.2 && git checkout 6.2
+    cd /root/seafile/dev && git clone git@github.com:seafileltd/seafevents.git && cd seafevents && git fetch origin 6.2:6.2 && git checkout 6.2
 
     cd /root/seafile/conf && cat > seafevents.conf  <<EOF
 [DATABASE]
 type=mysql
 username=root
-password=
+password=db_dev
 name=seafevents
 host=db
 
@@ -137,7 +133,7 @@ fi
 if [[ ! -e /data/dev ]]; then
     init
     cp /root/scripts/setenv.sh /root/seafile/dev
-    cp /root/scripts/run-seahub.sh /root/seafile/dev
+    cp /root/scripts/run.sh /root/seafile/dev
     chmod u+x /root/seafile/dev/*.sh
 else
     rm -rf /root/seafile && ln -sf /data /root/seafile

@@ -9,7 +9,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=True
+      - MYSQL_ROOT_PASSWORD=db_dev
 
   memcached:
     image: memcached:1.4-alpine
