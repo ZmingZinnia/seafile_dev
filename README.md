@@ -1,5 +1,27 @@
 # README.md
 
+## includes mode
+
+* seafile-pro-server
+* ccnet-pro-server
+* seahub
+* seahub-extra
+* seafevents
+* seafobj
+
+## file struct
+
+* mounted directory
+  * conf:configure folder
+  * dev: the code of seafile-pro etc project
+  * logs: the logs of project
+  * migrate
+    * source
+      * bin: the binary file of compile
+      * include: the head file of compile
+      * lib: the lib file of compile
+      * share: the share data of compile
+
 ## Usage
 
 ### Steps
@@ -22,6 +44,20 @@
     ```bash
     cd path/to/project/image
     ./build.sh
+    ```
+
+* update docker-compose.yml
+
+    ```yml
+    ...
+    ...
+    # the path of mysql data mounted, update `/opt/mysql-data` to any path you want to save
+    /opt/mysql-data:/var/lib/mysql
+    ...
+    ...
+    # the path of this project mounted, update `/root/data` to any path you want to save
+    /root/data:/data
+    ...
     ```
 
 * run image
