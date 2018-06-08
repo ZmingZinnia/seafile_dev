@@ -164,7 +164,6 @@ fi
 
 if [[ ! -e /data/dev ]]; then
     init
-    cp /root/scripts/setenv.sh /root/seafile/dev
     cp /root/scripts/run.sh /root/seafile/dev
     chmod u+x /root/seafile/dev/*.sh
 else
