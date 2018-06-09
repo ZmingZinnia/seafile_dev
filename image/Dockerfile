@@ -1,8 +1,7 @@
 FROM phusion/baseimage:0.10.1
 
-ENV UPDATE_AT=20160515 BRANCH=6.2
+ENV UPDATE_AT=20180609 BRANCH=6.2 SOURCE_PATH=/seafile/dev/migrate/source
 
-CMD ["/sbin/my_init", "--", "bash", "-l"]
 RUN rm -rf /etc/my_init.d/*
 COPY id_rsa.pub id_rsa /root/.ssh/
 COPY 01_init.sh /etc/my_init.d/

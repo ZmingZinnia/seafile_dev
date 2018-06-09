@@ -26,8 +26,16 @@ function link_seahub_setting() {
     ln -sf /data/conf/local_settings.py /root/seafile/dev/seahub/seahub/local_settings.py
 }
 
+function update_profile() {
+    echo 'alias seafile-checkout="/root/scripts/sefaile-checkout.sh $@"' >> ~/.profile
+    source ~/.profile
+}
 
 function prepare() {
+    update_profile
+}
+
+function prepare_init() {
     mkdir -p /data/dev
     rm -rf /root/seafile && ln -sf /data /root/seafile
 
@@ -45,7 +53,7 @@ function prepare() {
 
 function init() {
 
-    prepare
+    prepare_init
 
     cd /root/seafile/dev
     
@@ -161,6 +169,7 @@ if [[ ! -e /data ]]; then
     exit 1
 fi
 
+prepare
 
 if [[ ! -e /data/dev ]]; then
     init
