@@ -8,6 +8,7 @@ function stop_server() {
     pkill -9 -f ccnet-server
     pkill -9 -f seaf-server
     pkill -9 -f runserver
+    pkill -9 -f main
 }
 
 function set_env() {
@@ -22,17 +23,15 @@ function start_server() {
 
     set_env
 
-    ccnet-server -c /root/seafile/conf -D all -L /root/seafile -f - >/root/seafile/logs/ccnet.log 2>&1 &
+    nohup ccnet-server -c /root/seafile/conf -D all -L /root/seafile -f - >/root/seafile/logs/ccnet.log 2>&1 &
     sleep 0.5
-    seaf-server -c /root/seafile/conf -d /root/seafile/conf/seafile-data -D all -f -l - >/root/seafile/logs/seafile.log 2>&1 &
+    nohup seaf-server -c /root/seafile/conf -d /root/seafile/conf/seafile-data -D all -f -l - >/root/seafile/logs/seafile.log 2>&1 &
     sleep 0.5
     cd /data/dev/seahub
     nohup python manage.py runserver 0.0.0.0:8000 2>&1 > /root/seafile/logs/seahub-runtime.log &
     cd ../seafevents
     sleep 3
     nohup python main.py --config-file /root/seafile/conf/seafevents.conf 2>&1 > /root/seafile/logs/seafevents.log &
-
-    watch_server
 }
 
 function check_python_executable() {
@@ -78,15 +77,6 @@ function check_process(){
         echo "$1 already exit"
         exit 1
     fi
-}
-
-function watch_server() {
-    while [ 1 ] ; do
-            check_process "ccnet-server"
-            check_process "seaf-server"
-            check_process "runserver"
-            sleep 10
-    done
 }
 
 function migrate_source() {

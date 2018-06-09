@@ -1,21 +1,35 @@
 version: '3'
 services:
+  # log:
+  #   image: bobrik/syslog-ng
+  #   ports:
+  #     - 127.0.0.1:514:514
+  #   volumes:
+  #     - /opt/seafile_dev/conf/syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf
+  #     - /var/log/syslog-ng:/var/log/syslog-ng
   db:
     image: mysql:5.7
     container_name: seafile-mysql
+    #logging:
+    #  driver: "syslog"
+    #  options:
+    #    syslog-address: "tcp://127.0.0.1:514"
+    #    syslog-facility: daemon
+    #    tag: "{{.Name}}/{{.ID}}"
     volumes:
-      - /opt/mysql-data:/var/lib/mysql
-      - /opt/seafile_dev/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - "/opt/mysql-data:/var/lib/mysql"
+      - "/opt/seafile_dev/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
     ports:
-      - "3306:3306"
+      - 3306:3306
     environment:
       - MYSQL_ROOT_PASSWORD=db_dev
+      - MYSQL_LOG_CONSOLE=true
 
   memcached:
     image: memcached:1.4-alpine
     container_name: seafile-memcached
     ports:
-      - "11211:11211"
+      - 11211:11211
 
   pro:
     image: dev/seafile-dev-pro:6.2
@@ -33,7 +47,7 @@ services:
     volumes:
       - /root/data:/data
     ports:
-     - "8000:8000"
+     - 8000:8000
      - "8082:8082"
      - "3000:3000"
     depends_on:
