@@ -80,7 +80,7 @@ function init() {
 
     cd conf && echo -en "\n[Database]\nENGINE = mysql\nHOST = db\nPORT = 3306\nUSER = root\nPASSWD = db_dev\nDB = ccnet\nCONNECTION_CHARSET = utf8" >> ccnet.conf && echo -en "\n[database]\ntype = mysql\nhost = db\nport = 3306\nuser = root\npassword = db_dev\ndb_name = seafile\nconnection_charset = utf8" >> seafile-data/seafile.conf
 
-    cd /root/seafile/dev && git clone https://github.com/haiwen/seahub.git && cd seahub && git fetch origin 6.2:6.2 && git checkout 6.2
+    cd /root/seafile/dev && git clone https://github.com/haiwen/seahub.git && cd seahub && git fetch origin 6.3:6.3 && git checkout 6.3
 
     cd /root/seafile/dev/seahub/seahub && cp settings.py /root/seafile/conf/seahub_settings.py && cd /root/seafile/conf && cat > local_settings.py <<EOF
 DEBUG = True
@@ -98,9 +98,9 @@ DATABASES = {
 }
 EOF
 
-    cd /root/seafile/dev &&  git clone git@github.com:seafileltd/seahub-extra.git && cd seahub-extra && git fetch origin 6.2:6.2 && git checkout 6.2
+    cd /root/seafile/dev &&  git clone git@github.com:seafileltd/seahub-extra.git && cd seahub-extra && git fetch origin 6.3:6.3 && git checkout 6.3
 
-    cd /root/seafile/dev && git clone git@github.com:seafileltd/seafevents.git && cd seafevents && git fetch origin 6.2:6.2 && git checkout 6.2
+    cd /root/seafile/dev && git clone git@github.com:seafileltd/seafevents.git && cd seafevents && git fetch origin 6.3:6.3 && git checkout 6.3
 
     cd /root/seafile/conf && cat > seafevents.conf  <<EOF
 [DATABASE]
@@ -125,34 +125,34 @@ EOF
     cd /root/seafile/dev && git clone git@github.com:seafileltd/seafes.git
 
     # build-in office
-    mkdir -p  $office_dep_path
-    cd $office_dep_path && git clone https://github.com/fontforge/libspiro.git && cd libspiro && autoreconf -i && automake --foreign -Wall && ./configure --prefix=$source_prefix && make && make check && make install
+    #mkdir -p  $office_dep_path
+    #cd $office_dep_path && git clone https://github.com/fontforge/libspiro.git && cd libspiro && autoreconf -i && automake --foreign -Wall && ./configure --prefix=$source_prefix && make && make check && make install
 
-    local_migrate
+    #local_migrate
 
-    cd $office_dep_path && git clone https://github.com/LuaDist/libjpeg.git && cd libjpeg && ./configure --prefix=$source_prefix && make && make install
+    #cd $office_dep_path && git clone https://github.com/LuaDist/libjpeg.git && cd libjpeg && ./configure --prefix=$source_prefix && make && make install
 
-    local_migrate
+    #local_migrate
 
-    cd $office_dep_path && git clone https://github.com/glennrp/libpng.git && cd libpng && git reset --soft af08094ba669eb22401fe1bd771d12a866a6b24e && git reset --hard && ./autogen.sh && ./configure --prefix=$source_prefix && make && make install
+    #cd $office_dep_path && git clone https://github.com/glennrp/libpng.git && cd libpng && git reset --soft af08094ba669eb22401fe1bd771d12a866a6b24e && git reset --hard && ./autogen.sh && ./configure --prefix=$source_prefix && make && make install
 
-    local_migrate
+    #local_migrate
 
-    cd $office_dep_path && wget https://ftp.osuosl.org/pub/blfs/conglomeration/poppler/poppler-data-0.4.7.tar.gz && tar -zxvf poppler-data-0.4.7.tar.gz && cd poppler-data-0.4.7 && make install datadir=/usr DESTDIR=/tmp/buildroot-xyz2000
+    #cd $office_dep_path && wget https://ftp.osuosl.org/pub/blfs/conglomeration/poppler/poppler-data-0.4.7.tar.gz && tar -zxvf poppler-data-0.4.7.tar.gz && cd poppler-data-0.4.7 && make install datadir=/usr DESTDIR=/tmp/buildroot-xyz2000
 
-    local_migrate
+    #local_migrate
 
-    cd $office_dep_path && wget https://poppler.freedesktop.org/poppler-0.44.0.tar.xz && tar -xvf poppler-0.44.0.tar.xz && cd poppler-0.44.0/ && ./configure --enable-xpdf-headers --prefix=$source_prefix && make && make install
+    #cd $office_dep_path && wget https://poppler.freedesktop.org/poppler-0.44.0.tar.xz && tar -xvf poppler-0.44.0.tar.xz && cd poppler-0.44.0/ && ./configure --enable-xpdf-headers --prefix=$source_prefix && make && make install
 
-    local_migrate
+    #local_migrate
 
-    cd $office_dep_path && git clone --depth 1 https://github.com/coolwanglu/fontforge.git && cd fontforge && git fetch origin pdf2htmlEX:pdf2htmlEX && git checkout pdf2htmlEX && ./autogen.sh && ./configure --prefix=$source_prefix && make && make install
+    #cd $office_dep_path && git clone --depth 1 https://github.com/coolwanglu/fontforge.git && cd fontforge && git fetch origin pdf2htmlEX:pdf2htmlEX && git checkout pdf2htmlEX && ./autogen.sh && ./configure --prefix=$source_prefix && make && make install
 
-    local_migrate
+    #local_migrate
 
-    cd $office_dep_path && git clone --depth 1 https://github.com/coolwanglu/pdf2htmlEX.git && cd pdf2htmlEX/ && cmake -DCMAKE_INSTALL_PREFIX:PATH=$source_prefix . && make && make install
+    #cd $office_dep_path && git clone --depth 1 https://github.com/coolwanglu/pdf2htmlEX.git && cd pdf2htmlEX/ && cmake -DCMAKE_INSTALL_PREFIX:PATH=$source_prefix . && make && make install
 
-    local_migrate
+    #local_migrate
 }
 
 

@@ -30,8 +30,10 @@ function start_server() {
     cd /data/dev/seahub
     nohup python manage.py runserver 0.0.0.0:8000 2>&1 > /root/seafile/logs/seahub-runtime.log &
     cd ../seafevents
-    sleep 3
+    sleep 0.5
     nohup python main.py --config-file /root/seafile/conf/seafevents.conf 2>&1 > /root/seafile/logs/seafevents.log &
+    # Seafevents cannot start without sleep for a few seconds
+    sleep 2
 }
 
 function check_python_executable() {
