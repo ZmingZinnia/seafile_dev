@@ -26,24 +26,19 @@
 
 ### Steps
 
-* clone project
+* download `docker-compose.yml` file
 
     ```bash
-    git clone git@github.com:seafileltd/seafile_dev.git
+    cd /tmp
+    wget https://raw.githubusercontent.com/seafileltd/seafile_dev/master/docker-compose.yml
     ```
 
-* place the SSH public and private keys in the image folder
+* create the mounted directory and create the `ssh_key` folder in that directory, copy public/private key to `ssh_key` folder
 
     ```bash
-    cp id_rsa /path/to/porject/image
-    cp id_rsa.pub /path/to/project/image
-    ```
-
-* build image
-
-    ```bash
-    cd path/to/project/image
-    ./build.sh
+    mkdir -p /data
+    mkdir -p /data/ssh_key
+    cp ~/.ssh/id_rsa* /data/ssh_key
     ```
 
 * update docker-compose.yml
@@ -60,10 +55,12 @@
     ...
     ```
 
+* login private register
+
 * run image
 
     ```bash
-    cd /path/to/project
+    cd /tmp
     docker-compose up
     ```
 
@@ -116,16 +113,5 @@
 
     ```bash
     # enter continer
-    docker exec -it seafile-dev-pro bash
-
-    # switch branch and compile
-    cd ~/seafile/dev/seafile-pro-server
-    git checkout xxx
-    ./configure --prefix=/root/seafile/migrate/source
-    make
-    make install
-
-    # migrate to volumes
-    cd ~/seafile/dev
-    ./run.sh migrate
+    docker exec -it /root/scripts/seafile-checkout.sh ccnet-pro-server[project_name] 6.3-pro[branch_name]
     ```
