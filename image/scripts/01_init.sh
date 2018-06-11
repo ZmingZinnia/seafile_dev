@@ -166,6 +166,8 @@ if [[ ! -e /data/ssh_key/id_rsa.pub || ! -e /data/ssh_key/id_rsa ]]; then
 fi
 
 cp -rf /data/ssh_key/id_rsa.pub /data/ssh_key/id_rsa /root/.ssh/
+chmod 600 /root/.ssh/id_rsa
+chmod 644 /root/.ssh/id_rsa.pub
 
 if [[ ! -e /data/dev ]]; then
     init
