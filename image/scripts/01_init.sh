@@ -2,8 +2,8 @@
 
 set -e
 
-source_prefix=/root/seafile/migrate/source
-office_dep_path=/root/seafile/dev/office_dep
+source_prefix=/data/migrate/source
+office_dep_path=/data/dev/office_dep
 
 function local_migrate() {
     dirs=(
@@ -20,15 +20,14 @@ function local_migrate() {
 }
 
 function link_seahub_setting() {
-    rm -rf /root/seafile/dev/seahub/seahub/settings.py
-    rm -rf /root/seafile/dev/seahub/seahub/local_settings.py
-    ln -sf /data/conf/seahub_settings.py /root/seafile/dev/seahub/seahub/settings.py
-    ln -sf /data/conf/local_settings.py /root/seafile/dev/seahub/seahub/local_settings.py
+    rm -rf /data/dev/seahub/seahub/settings.py
+    rm -rf /data/dev/seahub/seahub/local_settings.py
+    ln -sf /data/conf/seahub_settings.py /data/dev/seahub/seahub/settings.py
+    ln -sf /data/conf/local_settings.py /data/dev/seahub/seahub/local_settings.py
 }
 
 function prepare_init() {
     mkdir -p /data/dev
-    rm -rf /root/seafile && ln -sf /data /root/seafile
 
     dirs=(
         migrate/source
@@ -46,7 +45,7 @@ function init() {
 
     prepare_init
 
-    cd /root/seafile/dev
+    cd /data/dev
     
     wget https://launchpad.net/libmemcached/1.0/1.0.18/+download/libmemcached-1.0.18.tar.gz && tar xf libmemcached-1.0.18.tar.gz && cd libmemcached-1.0.18/ && ./configure --prefix=$source_prefix && make && make install && ldconfig && cd ..
 
@@ -70,19 +69,19 @@ function init() {
 
     local_migrate
 
-    ccnet-init -c /root/seafile/conf -n zming -H 127.0.0.1
+    ccnet-init -c /data/conf -n zming -H 127.0.0.1
     
     git clone git@github.com:seafileltd/seafile-pro-server.git && cd seafile-pro-server && git fetch origin 6.3-pro:6.3-pro && git checkout 6.3-pro && ./autogen.sh && ./configure --disable-fuse --prefix=$source_prefix && make && make install && ldconfig && cd ..
 
     local_migrate
 
-    cd /root/seafile/conf && seaf-server-init -d seafile-data/ && echo "/root/seafile/conf/seafile-data" > seafile.ini && cd ..
+    cd /data/conf && seaf-server-init -d seafile-data/ && echo "/data/conf/seafile-data" > seafile.ini && cd ..
 
     cd conf && echo -en "\n[Database]\nENGINE = mysql\nHOST = db\nPORT = 3306\nUSER = root\nPASSWD = db_dev\nDB = ccnet\nCONNECTION_CHARSET = utf8" >> ccnet.conf && echo -en "\n[database]\ntype = mysql\nhost = db\nport = 3306\nuser = root\npassword = db_dev\ndb_name = seafile\nconnection_charset = utf8" >> seafile-data/seafile.conf
 
-    cd /root/seafile/dev && git clone https://github.com/haiwen/seahub.git && cd seahub && git fetch origin 6.3:6.3 && git checkout 6.3
+    cd /data/dev && git clone https://github.com/haiwen/seahub.git && cd seahub && git fetch origin 6.3:6.3 && git checkout 6.3
 
-    cd /root/seafile/dev/seahub/seahub && cp settings.py /root/seafile/conf/seahub_settings.py && cd /root/seafile/conf && cat > local_settings.py <<EOF
+    cd /data/dev/seahub/seahub && cp settings.py /data/conf/seahub_settings.py && cd /data/conf && cat > local_settings.py <<EOF
 DEBUG = True
 TEMPLATE_DEBUG = True
 
@@ -98,11 +97,11 @@ DATABASES = {
 }
 EOF
 
-    cd /root/seafile/dev &&  git clone git@github.com:seafileltd/seahub-extra.git && cd seahub-extra && git fetch origin 6.3:6.3 && git checkout 6.3
+    cd /data/dev &&  git clone git@github.com:seafileltd/seahub-extra.git && cd seahub-extra && git fetch origin 6.3:6.3 && git checkout 6.3
 
-    cd /root/seafile/dev && git clone git@github.com:seafileltd/seafevents.git && cd seafevents && git fetch origin 6.3:6.3 && git checkout 6.3
+    cd /data/dev && git clone git@github.com:seafileltd/seafevents.git && cd seafevents && git fetch origin 6.3:6.3 && git checkout 6.3
 
-    cd /root/seafile/conf && cat > seafevents.conf  <<EOF
+    cd /data/conf && cat > seafevents.conf  <<EOF
 [DATABASE]
 type=mysql
 username=root
@@ -113,7 +112,7 @@ host=db
 [INDEX FILES]
 enabled=true
 interval=5m
-seafesdir=/root/seafile/dev/seafes/
+seafesdir=/data/dev/seafes/
 
 [STATISTICS]
 enabled = true
@@ -122,7 +121,7 @@ enabled = true
 enabled = true
 EOF
 
-    cd /root/seafile/dev && git clone git@github.com:seafileltd/seafes.git
+    cd /data/dev && git clone git@github.com:seafileltd/seafes.git
 
     # build-in office
     #mkdir -p  $office_dep_path
@@ -171,10 +170,8 @@ chmod 644 /root/.ssh/id_rsa.pub
 
 if [[ ! -e /data/dev ]]; then
     init
-    cp /root/scripts/run.sh /root/seafile/dev
-    chmod u+x /root/seafile/dev/*.sh
-else
-    rm -rf /root/seafile && ln -sf /data /root/seafile
+    cp /root/scripts/run.sh /data/dev
+    chmod u+x /data/dev/*.sh
 fi
 
 link_seahub_setting

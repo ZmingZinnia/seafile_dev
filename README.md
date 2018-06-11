@@ -69,13 +69,13 @@
 * create seahub table
 
     ```bash
-    docker exec -it seafile-dev-pro /root/seafile/dev/run.sh python-env /root/seafile/dev/seahub/manage.py syncdb
+    docker exec -it seafile-dev-pro /data/dev/run.sh python-env /data/dev/seahub/manage.py syncdb
     ```
 
 * create super admin
 
     ```bash
-    docker exec -it seafile-dev-pro /root/seafile/dev/run.sh python-env /root/seafile/dev/seahub/manage.py createsuperuser
+    docker exec -it seafile-dev-pro /data/dev/run.sh python-env /data/dev/seahub/manage.py createsuperuser
     ```
 
 ## explain
@@ -97,14 +97,14 @@
 * exec python command under project env
 
     ```bash
-    docker exec -it seafile-dev-pro /root/seafile/dev/run.sh.sh python-env xxx
+    docker exec -it seafile-dev-pro /data/dev/run.sh.sh python-env xxx
     equal to `python xxx`
     ```
 
 * migrate the file of compilation to `/usr` path
 
     ```bash
-    docker exec -it seafile-dev-pro /root/seafile/dev/run.sh.sh migrate
+    docker exec -it seafile-dev-pro /data/dev/run.sh.sh migrate
     ```
 
 ## simple example

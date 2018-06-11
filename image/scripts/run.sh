@@ -2,7 +2,7 @@
 
 #set -e
 
-source_prefix=/root/seafile/migrate/source
+source_prefix=/data/migrate/source
 
 function stop_server() {
     pkill -9 -f ccnet-server
@@ -12,10 +12,10 @@ function stop_server() {
 }
 
 function set_env() {
-    export CCNET_CONF_DIR=/root/seafile/conf
-    export SEAFILE_CONF_DIR=/root/seafile/conf/seafile-data
-    export PYTHONPATH=/usr/lib/python2.7/dist-packages:/usr/lib/python2.7/site-packages:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages:/root/seafile/dev/seahub/thirdpart:/root/seafile/dev/pyes/pyes:/root/seafile/dev/seahub-extra::/root/seafile/dev/portable-python-libevent/libevent:/root/seafile/dev/seafobj:/root/seafile/dev/:/root/seafile/dev/seahub/seahub/:$PYTHONPATH
-    export SEAFES_DIR=/root/seafile/dev/seafes/
+    export CCNET_CONF_DIR=/data/conf
+    export SEAFILE_CONF_DIR=/data/conf/seafile-data
+    export PYTHONPATH=/usr/lib/python2.7/dist-packages:/usr/lib/python2.7/site-packages:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages:/data/dev/seahub/thirdpart:/data/dev/pyes/pyes:/data/dev/seahub-extra::/data/dev/portable-python-libevent/libevent:/data/dev/seafobj:/data/dev/:/data/dev/seahub/seahub/:$PYTHONPATH
+    export SEAFES_DIR=/data/dev/seafes/
 }
 
 function start_server() {
@@ -23,15 +23,15 @@ function start_server() {
 
     set_env
 
-    nohup ccnet-server -c /root/seafile/conf -D all -L /root/seafile -f - >/root/seafile/logs/ccnet.log 2>&1 &
+    nohup ccnet-server -c /data/conf -D all -L /data -f - >/data/logs/ccnet.log 2>&1 &
     sleep 0.5
-    nohup seaf-server -c /root/seafile/conf -d /root/seafile/conf/seafile-data -D all -f -l - >/root/seafile/logs/seafile.log 2>&1 &
+    nohup seaf-server -c /data/conf -d /data/conf/seafile-data -D all -f -l - >/data/logs/seafile.log 2>&1 &
     sleep 0.5
     cd /data/dev/seahub
-    nohup python manage.py runserver 0.0.0.0:8000 2>&1 > /root/seafile/logs/seahub-runtime.log &
+    nohup python manage.py runserver 0.0.0.0:8000 2>&1 > /data/logs/seahub-runtime.log &
     cd ../seafevents
     sleep 0.5
-    nohup python main.py --config-file /root/seafile/conf/seafevents.conf 2>&1 > /root/seafile/logs/seafevents.log &
+    nohup python main.py --config-file /data/conf/seafevents.conf 2>&1 > /data/logs/seafevents.log &
     # Seafevents cannot start without sleep for a few seconds
     sleep 2
 }
