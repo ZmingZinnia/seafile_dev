@@ -19,12 +19,6 @@ function local_migrate() {
     done
 }
 
-function link_seahub_setting() {
-    rm -rf /data/dev/seahub/seahub/settings.py
-    rm -rf /data/dev/seahub/seahub/local_settings.py
-    ln -sf /data/conf/seahub_settings.py /data/dev/seahub/seahub/settings.py
-    ln -sf /data/conf/local_settings.py /data/dev/seahub/seahub/local_settings.py
-}
 
 function prepare_init() {
     mkdir -p /data/dev
@@ -81,7 +75,7 @@ function init() {
 
     cd /data/dev && git clone https://github.com/haiwen/seahub.git && cd seahub && git fetch origin 6.3:6.3 && git checkout 6.3
 
-    cd /data/dev/seahub/seahub && cp settings.py /data/conf/seahub_settings.py && cd /data/conf && cat > local_settings.py <<EOF
+    cd /data/conf && cat > seahub_settings.py <<EOF
 DEBUG = True
 TEMPLATE_DEBUG = True
 
@@ -173,7 +167,5 @@ if [[ ! -e /data/dev ]]; then
     cp /root/scripts/run.sh /data/dev
     chmod u+x /data/dev/*.sh
 fi
-
-link_seahub_setting
 
 local_migrate

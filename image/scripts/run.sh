@@ -14,7 +14,7 @@ function stop_server() {
 function set_env() {
     export CCNET_CONF_DIR=/data/conf
     export SEAFILE_CONF_DIR=/data/conf/seafile-data
-    export PYTHONPATH=/usr/lib/python2.7/dist-packages:/usr/lib/python2.7/site-packages:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages:/data/dev/seahub/thirdpart:/data/dev/pyes/pyes:/data/dev/seahub-extra::/data/dev/portable-python-libevent/libevent:/data/dev/seafobj:/data/dev/:/data/dev/seahub/seahub/:$PYTHONPATH
+    export PYTHONPATH=/usr/lib/python2.7/dist-packages:/usr/lib/python2.7/site-packages:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages:/data/dev/seahub/thirdpart:/data/dev/pyes/pyes:/data/dev/seahub-extra::/data/dev/portable-python-libevent/libevent:/data/dev/seafobj:/data/dev/:/data/dev/seahub/seahub/:/data/conf:$PYTHONPATH
     export SEAFES_DIR=/data/dev/seafes/
 }
 
