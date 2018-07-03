@@ -2,8 +2,6 @@
 
 #set -e
 
-source_prefix=/data/migrate/source
-
 function stop_server() {
     pkill -9 -f ccnet-server
     pkill -9 -f seaf-server
@@ -12,9 +10,9 @@ function stop_server() {
 }
 
 function set_env() {
-    export CCNET_CONF_DIR=/data/conf
-    export SEAFILE_CONF_DIR=/data/conf/seafile-data
-    export PYTHONPATH=/usr/lib/python2.7/dist-packages:/usr/lib/python2.7/site-packages:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages:/data/dev/seahub/thirdpart:/data/dev/pyes/pyes:/data/dev/seahub-extra::/data/dev/portable-python-libevent/libevent:/data/dev/seafobj:/data/dev/:/data/dev/seahub/seahub/:/data/conf:$PYTHONPATH
+    export CCNET_CONF_DIR=$CONF_PATH
+    export SEAFILE_CONF_DIR=$CONF_PATH/seafile-data
+    export PYTHONPATH=/usr/lib/python2.7/dist-packages:/usr/lib/python2.7/site-packages:/usr/local/lib/python2.7/dist-packages:/usr/local/lib/python2.7/site-packages:/data/dev/seahub/thirdpart:/data/dev/pyes/pyes:/data/dev/seahub-extra::/data/dev/portable-python-libevent/libevent:/data/dev/seafobj:/data/dev/:/data/dev/seahub/seahub/:$CONF_PATH:$PYTHONPATH
     export SEAFES_DIR=/data/dev/seafes/
 }
 
@@ -23,15 +21,15 @@ function start_server() {
 
     set_env
 
-    nohup ccnet-server -c /data/conf -D all -L /data -f - >/data/logs/ccnet.log 2>&1 &
+    nohup ccnet-server -c $CONF_PATH -D all -L /data -f - > $LOG_PATH/ccnet.log 2>&1 &
     sleep 0.5
-    nohup seaf-server -c /data/conf -d /data/conf/seafile-data -D all -f -l - >/data/logs/seafile.log 2>&1 &
+    nohup seaf-server -c $CONF_PATH -d $CONF_PATH/seafile-data -D all -f -l - > $LOG_PATH/seafile.log 2>&1 &
     sleep 0.5
     cd /data/dev/seahub
-    nohup python manage.py runserver 0.0.0.0:8000 2>&1 > /data/logs/seahub-runtime.log &
+    nohup python manage.py runserver 0.0.0.0:8000 2>&1 > $LOG_PATH/seahub-runtime.log &
     cd ../seafevents
     sleep 0.5
-    nohup python main.py --config-file /data/conf/seafevents.conf 2>&1 > /data/logs/seafevents.log &
+    nohup python main.py --config-file $CONF_PATH/seafevents.conf 2>&1 > $LOG_PATH/seafevents.log &
     # Seafevents cannot start without sleep for a few seconds
     sleep 2
 }
@@ -89,8 +87,8 @@ function migrate_source() {
         bin
     )
     for d in ${dirs[*]}; do
-        if [[ -e ${source_prefix}/$d ]]; then
-            cp -rf ${source_prefix}/$d/* /usr/$d/
+        if [[ -e ${SOURCE_PATH}/$d ]]; then
+            cp -rf ${SOURCE_PATH}/$d/* /usr/$d/
         fi
     done
 }
