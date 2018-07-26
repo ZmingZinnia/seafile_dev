@@ -1,6 +1,6 @@
 FROM phusion/baseimage:0.10.1
 
-ENV UPDATE_AT=20180609 BRANCH=master SOURCE_PATH=/data/migrate DATA_PATH=/data/dev LOG_PATH=/data/log CONF_PATH=/data/conf
+ENV UPDATE_AT=20180609 BRANCH=master SOURCE_PATH=/data/migrate DATA_PATH=/data/dev LOG_PATH=/data/logs CONF_PATH=/data/conf
 
 RUN rm -rf /etc/my_init.d/*
 COPY scripts/01_init.sh scripts/02_aliass.sh /etc/my_init.d/
@@ -9,12 +9,11 @@ COPY scripts /root/scripts
 RUN apt-get update -qq && apt-get install python2.7 python-dev autoconf automake mysql-client -q=2
 RUN rm -rf /etc/localtime && ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
 
-RUN apt-get install -y ssh libevent-dev libcurl4-openssl-dev libglib2.0-dev uuid-dev intltool libsqlite3-dev libmysqlclient-dev libarchive-dev libtool libjansson-dev valac libfuse-dev python-dateutil cmake re2c flex sqlite3 python-pip python-simplejson git libssl-dev libldap2-dev libonig-dev memcached
-
-RUN apt install -y ssh libevent-dev libcurl4-openssl-dev libglib2.0-dev uuid-dev intltool libsqlite3-dev libmysqlclient-dev libarchive-dev libtool libjansson-dev valac libfuse-dev python-dateutil cmake re2c flex sqlite3 python-pip python-simplejson git libssl-dev libldap2-dev libonig-dev vim vim-scripts vim-gtk vim-gnome exuberant-ctags nodejs npm  wget
-
 # npm for front-end dev
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+
+RUN apt install -y ssh libevent-dev libcurl4-openssl-dev libglib2.0-dev uuid-dev intltool libsqlite3-dev libmysqlclient-dev libarchive-dev libtool libjansson-dev valac libfuse-dev python-dateutil cmake re2c flex sqlite3 python-pip python-simplejson git libssl-dev libldap2-dev libonig-dev vim vim-scripts vim-gtk vim-gnome exuberant-ctags wget nodejs
+
 
 # build-in office
 
