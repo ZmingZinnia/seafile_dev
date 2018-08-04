@@ -32,16 +32,15 @@ services:
       - 11211:11211
 
   pro:
-    image: docker-dev.seafile.top/seafile-pro-dev:6.3
+    image: docker.seafile.top/seafile-dev/seafile-pro-dev:6.3.1
 
     environment:
       - DOCKER_DEV=1
       - LOCAL_USER_ID=1000
       - IS_PRO_VERSION=1
-      - LICENSE_DIR=/code/seaf-license # comment this value if image is pro:6.0
-      - CCNET_CONF_DIR=/code/seafile-pro-server/tests/conf
-      - SEAFILE_CONF_DIR=/code/seafile-pro-server/tests/conf/seafile-data
+      - LICENSE_DIR=/code/seaf-license
       - PYTHONPATH=/code:/code/seafevents:/usr/local/lib/python2.7/dist-packages:/code/seahub/thirdpart:/code/seahub/thirdpart/social-app-django
+      - PATH=/data/scripts:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     container_name: seafile-dev-pro
     volumes:

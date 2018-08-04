@@ -1,12 +1,16 @@
 FROM phusion/baseimage:0.10.1
 
-ENV UPDATE_AT=20180609 BRANCH=6.3 SOURCE_PATH=/data/migrate DATA_PATH=/data/dev LOG_PATH=/data/logs CONF_PATH=/data/conf
+ENV UPDATE_AT=20180804 BRANCH=6.3 COMPILE_PATH=/data/compiled SOURCE_PATH=/data/dev LOG_PATH=/data/logs CONF_PATH=/data/conf
 
-RUN rm -rf /etc/my_init.d/*
+RUN rm -rf /etc/my_init.d/* /etc/apt/sources.list
 COPY scripts/01_init.sh scripts/02_aliass.sh /etc/my_init.d/
+COPY scripts/my-ubuntu-source.list /etc/apt/sources.list.d
 COPY scripts /root/scripts
 
-RUN apt-get update -qq && apt-get install python2.7 python-dev autoconf automake mysql-client -q=2
+# npm for front-end dev
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+
+RUN apt-get update -qq && apt-get install python2.7 python-dev autoconf automake mysql-client
 RUN rm -rf /etc/localtime && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 
@@ -16,17 +20,15 @@ RUN apt-get install -y ssh libevent-dev libcurl4-openssl-dev libglib2.0-dev \
   libjansson-dev valac libfuse-dev python-dateutil cmake re2c flex sqlite3 python-pip \
   python-simplejson git libssl-dev libldap2-dev libonig-dev
 
-# npm for front-end dev
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 
 # development tools
-RUN apt-get install vim vim-scripts exuberant-ctags wget nodejs git
+RUN apt-get install -qq -y vim vim-scripts exuberant-ctags wget nodejs git
 RUN apt-get install -qq -y cmake gcc
 
 # build-in office and file search
 RUN apt-get install -qq -y pkg-config poppler-utils
-RUN apt-get install -qq -y libreoffice libreoffice-script-provider-python
-RUN apt-get install -qq -y ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy
+# RUN apt-get install -qq -y libreoffice libreoffice-script-provider-python
+# RUN apt-get install -qq -y ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy
 
 
 RUN apt-get autoremove -y
