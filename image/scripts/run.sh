@@ -61,7 +61,7 @@ function run_python_wth_env() {
 }
 
 
-function check_process(){
+function check_process() {
     # check the args
     if [ "$1" = "" ];
     then
@@ -162,21 +162,26 @@ EOF
 
     cd $CONF_PATH && cat > seafevents.conf  <<EOF
 [DATABASE]
-type=mysql
-username=root
-password=db_dev
-name=seafevents
-host=db
+type = mysql
+username = root
+password = db_dev
+name = seahub
+host = db
 
 [INDEX FILES]
-enabled=true
-interval=5m
-seafesdir=/data/dev/seafes/
+enabled = false
+interval = 5m
+external_es_server = true
+es_host = es
+es_port = 9200
 
 [STATISTICS]
 enabled = true
 
 [OFFICE CONVERTER]
+enabled = true
+
+[AUDIT]
 enabled = true
 EOF
 

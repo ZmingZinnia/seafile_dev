@@ -31,6 +31,16 @@ services:
     ports:
       - 11211:11211
 
+  # uncomment the following to add search feature
+  #es:
+  #  image: elasticsearch:2.4.5
+  #  container_name: seafile-es
+  #  volumes:
+  #    - "/root/data/es-data:/usr/share/elasticsearch/data"
+  #  ports:
+  #    - 9200:9200
+  #    - 9300:9300
+
   pro:
     image: docker.seafile.top/seafile-dev/seafile-pro-dev:6.3.1
 
@@ -52,3 +62,4 @@ services:
     depends_on:
       - db
       - memcached
+    # - es
