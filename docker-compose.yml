@@ -8,7 +8,7 @@ services:
   #     - /opt/seafile_dev/conf/syslog-ng.conf:/etc/syslog-ng/syslog-ng.conf
   #     - /var/log/syslog-ng:/var/log/syslog-ng
   db:
-    image: mysql:5.7
+    image: docker.seafile.top/seafile-dev/mariadb:10.3
     container_name: seafile-mysql
     #logging:
     #  driver: "syslog"
@@ -31,19 +31,28 @@ services:
     ports:
       - 11211:11211
 
+  # uncomment the following to add search feature
+  #es:
+  #  image: elasticsearch:2.4.5
+  #  container_name: seafile-es
+  #  volumes:
+  #    - "/root/data/es-data:/usr/share/elasticsearch/data"
+  #  ports:
+  #    - 9200:9200
+  #    - 9300:9300
+
   pro:
-    image: docker-dev.seafile.top/seafile-pro-dev:master
+    image: docker.seafile.top/seafile-dev/seafile-pro-dev:master
 
     environment:
       - DOCKER_DEV=1
       - LOCAL_USER_ID=1000
       - IS_PRO_VERSION=1
-      - LICENSE_DIR=/code/seaf-license # comment this value if image is pro:6.0
-      - CCNET_CONF_DIR=/code/seafile-pro-server/tests/conf
-      - SEAFILE_CONF_DIR=/code/seafile-pro-server/tests/conf/seafile-data
+      - LICENSE_DIR=/code/seaf-license
       - PYTHONPATH=/code:/code/seafevents:/usr/local/lib/python2.7/dist-packages:/code/seahub/thirdpart:/code/seahub/thirdpart/social-app-django
+      - PATH=/data/scripts:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-    container_name: seafile-dev-pro
+    container_name: seafile-pro-dev
     volumes:
       - /root/data:/data
     ports:
@@ -53,3 +62,4 @@ services:
     depends_on:
       - db
       - memcached
+    # - es
