@@ -40,31 +40,3 @@ fi
 export PATH=/data/scripts:/root/scripts:$PATH
 
 local_migrate
-
-
-autoSaveDraft = () => {
-  let that = this;
-  if (that.timer) {
-    return;
-  } else {
-    that.timer = setTimeout(() => {
-      if (that.state.contentChanged) {
-        let str = '';
-        if (this.state.mode == "rich") {
-          let value = this.state.richValue;
-          str = serialize(value.toJSON());
-        }
-        else if (this.state.mode == "plain") {
-          str = this.state.currentContent;
-        }
-        let fileInfo = this.props.editorUtilities.getDraftInfo();
-        localStorage.setItem(fileInfo, str);
-        Alert.success(this.props.t('save_drafts_successfully'), {
-          position: 'bottom-right',
-          effect: 'scale',
-          timeout: 1000
-        });
-      }
-    }, 60000);
-  }
-}
