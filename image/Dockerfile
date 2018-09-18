@@ -1,13 +1,13 @@
 FROM phusion/baseimage:0.10.1
 
-ENV UPDATE_AT=20180913 BRANCH=master COMPILE_PATH=/data/compiled SOURCE_PATH=/data/dev LOG_PATH=/data/logs CONF_PATH=/data/conf
+ENV UPDATE_AT=20180917 BRANCH=master COMPILE_PATH=/data/compiled SOURCE_PATH=/data/dev LOG_PATH=/data/logs CONF_PATH=/data/conf
 
 RUN rm -rf /etc/my_init.d/* /etc/apt/sources.list
 COPY scripts/01_init.sh scripts/02_aliass.sh /etc/my_init.d/
 COPY scripts/my-ubuntu-source.list /etc/apt/sources.list.d
 COPY scripts /root/scripts
 
-# npm for front-end dev
+# set up the repository for nodejs and  npm
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
 
 RUN apt-get update -qq && apt-get install -y -qq python2.7 python-dev autoconf automake mysql-client
@@ -30,8 +30,9 @@ RUN apt-get install -qq -y pkg-config poppler-utils
 # RUN apt-get install -qq -y libreoffice libreoffice-script-provider-python
 # RUN apt-get install -qq -y ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy
 
-
 RUN apt-get autoremove -y
+
+
 
 RUN . /root/scripts/pip_install.sh
 

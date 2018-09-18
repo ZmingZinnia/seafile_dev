@@ -116,6 +116,8 @@ function compile() {
 
     install_compiled
 
+    ssh-keygen -F github.com || ssh-keyscan github.com >>~/.ssh/known_hosts
+
     git clone git@github.com:haiwen/seafobj.git
 
     git clone git@github.com:haiwen/libevhtp.git && cd libevhtp/ && cmake -DCMAKE_INSTALL_PREFIX:PATH=$COMPILE_PATH -DEVHTP_DISABLE_SSL=OFF -DEVHTP_BUILD_SHARED=ON . && make && make install && ldconfig && cd ..
@@ -125,8 +127,6 @@ function compile() {
     git clone git@github.com:haiwen/libsearpc.git && cd libsearpc && ./autogen.sh && ./configure --prefix=$COMPILE_PATH && make && make install && ldconfig && cd ..
 
     install_compiled
-
-    ssh-keygen -F github.com || ssh-keyscan github.com >>~/.ssh/known_hosts
 
     git clone git@github.com:seafileltd/portable-python-libevent.git
 
